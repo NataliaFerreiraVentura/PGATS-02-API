@@ -13,7 +13,7 @@ function authMiddleware(req, res, next) {
 }
 const transferService = require('../services/transferService');
 
-router.post('/', authMiddleware, (req, res) => {
+router.post('/', (req, res) => {
     try {
         const transfer = transferService.transferValue(req.body);
         res.status(201).json(transfer);
@@ -22,7 +22,7 @@ router.post('/', authMiddleware, (req, res) => {
     }
 });
 
-router.get('/', authMiddleware, (req, res) => {
+router.get('/', (req, res) => {
     res.json(transferService.getTransfers());
 });
 

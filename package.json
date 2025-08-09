@@ -4,7 +4,7 @@
   "description": "Esta API permite registrar usuários, realizar login, consultar usuários e efetuar transferências de valores entre usuários. O banco de dados é em memória, ideal para estudos de automação e testes de API.",
   "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "mocha test/**/*.test.js --timeout 10000",
     "start": "node server.js"
   },
   "keywords": [],
@@ -17,5 +17,11 @@
     "express": "^5.1.0",
     "jsonwebtoken": "^9.0.2",
     "swagger-ui-express": "^5.0.1"
+  },
+  "devDependencies": {
+    "chai": "4.5.0",
+    "mocha": "^11.7.1",
+    "sinon": "^21.0.0",
+    "supertest": "^7.1.4"
   }
 }
