@@ -1,6 +1,29 @@
+
+
 const express = require('express');
 const router = express.Router();
 const userService = require('../services/userService');
+const authMiddleware = require('../middleware/authMiddleware');
+
+router.get('/balance', authMiddleware, (req, res) => {
+    try {
+        const username = req.user.username;
+        const result = userService.getBalance(username);
+        res.status(200).json(result);
+    } catch (err) {
+        res.status(400).json({ error: err.message });
+    }
+});
+
+router.post('/recharge', authMiddleware, (req, res) => {
+    const { username, amount } = req.body;
+    try {
+        const result = userService.rechargeCredit(username, amount);
+        res.status(200).json(result);
+    } catch (err) {
+        res.status(400).json({ error: err.message });
+    }
+});
 
 router.post('/register', (req, res) => {
     try {
