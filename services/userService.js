@@ -25,8 +25,33 @@ function getUsers() {
     return users;
 }
 
+function rechargeCredit(username, amount) {
+    if (!username || typeof amount !== 'number' || amount <= 0) {
+        throw new Error('Dados inválidos para recarga');
+    }
+    const user = users.find(u => u.username === username);
+    if (!user) {
+        throw new Error('Usuário não encontrado');
+    }
+    if (user.balance === undefined) {
+        user.balance = 0;
+    }
+    user.balance += amount;
+    return { username: user.username, balance: user.balance };
+}
+
+function getBalance(username) {
+    const user = users.find(u => u.username === username);
+    if (!user) {
+        throw new Error('Usuário não encontrado');
+    }
+    return { username: user.username, balance: user.balance || 0 };
+}
+
 module.exports = {
     registerUser,
     loginUser,
     getUsers,
+    rechargeCredit,
+    getBalance,
 };
