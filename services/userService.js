@@ -1,5 +1,11 @@
 const { users } = require('../models/userModel');
-const { generateToken } = require('../jwtConfig');
+const jwt = require('jsonwebtoken');
+
+const SECRET = process.env.JWT_SECRET || 'pgats-api-secret-1234567890abcdef';
+
+function generateToken(payload) {
+    return jwt.sign(payload, SECRET, { expiresIn: '1h', algorithm: 'HS256' });
+}
 
 function registerUser({ username, password, favorecidos = [] }) {
     if (!username || !password) {
