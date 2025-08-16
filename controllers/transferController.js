@@ -1,11 +1,11 @@
 const express = require('express');
 const router = express.Router();
 
-const authMiddleware = require('../middleware/authMiddleware');
+const authHS256 = require('../middleware/authHS256');
 const transferService = require('../services/transferService');
 
 
-router.post('/', authMiddleware, (req, res) => {
+router.post('/', authHS256, (req, res) => {
     try {
         const transfer = transferService.transferValue(req.body);
         res.status(201).json(transfer);
@@ -14,7 +14,7 @@ router.post('/', authMiddleware, (req, res) => {
     }
 });
 
-router.get('/', authMiddleware, (req, res) => {
+router.get('/', authHS256, (req, res) => {
     res.json(transferService.getTransfers());
 });
 

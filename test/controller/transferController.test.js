@@ -6,65 +6,75 @@ const { expect } = require('chai');
 // Aplicação 
 const app = require('../../app');
 
-//Mock
+// Serviço a ser mockado
 const transferService = require('../../services/transferService');
 
-// Testes
 describe('Transfer Controller', () => {
   let token;
+
+  // Cria usuário e faz login antes de todos os testes
   before(async () => {
-    // Cria usuário e faz login para obter token
     await request(app)
       .post('/users/register')
       .send({ username: 'Naty', password: '123456' });
+
     const loginRes = await request(app)
       .post('/users/login')
       .send({ username: 'Naty', password: '123456' });
+
     token = loginRes.body.user.token;
   });
 
+  // Limpa todos os mocks após cada teste
+  afterEach(() => sinon.restore());
+
+  // Helper para requests autenticadas
+  const authRequest = (method, route) => request(app)[method](route).set('Authorization', `Bearer ${token}`);
+
   describe('POST /transfer', () => {
-    it('Quando informo remetente e destinatario inexistentes recebo 400', async () => {
-      const resposta = await request(app)
-        .post('/transfer')
-        .set('Authorization', `Bearer ${token}`)
-        .send({
-          from: 'Naty',
-          to: 'Nathan',
-          amount: 100
-        });
-      expect(resposta.status).to.equal(400);
-      expect(resposta.body).to.have.property('error', 'Usuário remetente ou destinatário não encontrado');
+    it('Deve retornar 400 quando remetente ou destinatário não existem', async () => {
+      const res = await authRequest('post', '/transfer')
+        .send({ from: 'Naty', to: 'QA', amount: 100 });
+
+      expect(res.status).to.equal(400);
+      expect(res.body).to.have.property('error', 'Usuário remetente ou destinatário não encontrado');
     });
 
-    it('Usando MOKS: Quando informo remetente e destinatario inexistentes recebo 400', async () => {
-      // Mockar apenas a função transfer do service
-      const transferServiceMock = sinon.stub(transferService, 'transferValue');
-      transferServiceMock.throws(new Error('Usuário remetente ou destinatário não encontrado'));
+    it('Deve retornar 400 usando mock quando remetente ou destinatário não existem', async () => {
+      sinon.stub(transferService, 'transferValue').throws(new Error('Usuário remetente ou destinatário não encontrado'));
 
-      const resposta = await request(app)
-        .post('/transfer')
-        .set('Authorization', `Bearer ${token}`)
-        .send({
-          from: 'Naty',
-          to: 'Nathan',
-          amount: 100
-        });
-      expect(resposta.status).to.equal(400);
-      expect(resposta.body).to.have.property('error', 'Usuário remetente ou destinatário não encontrado');
+      const res = await authRequest('post', '/transfer')
+        .send({ from: 'Naty', to: 'JULIO', amount: 100 });
 
-      //Reseto o mock
-      sinon.restore();
+      expect(res.status).to.equal(400);
+      expect(res.body).to.have.property('error', 'Usuário remetente ou destinatário não encontrado');
+    });
+
+    it('Deve retornar 201 usando mock quando a transferência é válida', async () => {
+      const mockData = {
+        from: 'Naty',
+        to: 'Nathan',
+        amount: 100,
+        date: new Date().toISOString()
+      };
+      sinon.stub(transferService, 'transferValue').returns(mockData);
+
+      const res = await authRequest('post', '/transfer')
+        .send({ from: 'Naty', to: 'Nathan', amount: 100 });
+
+      expect(res.status).to.equal(201);
+      expect(res.body).to.have.property('from', 'Naty');
+      expect(res.body).to.have.property('to', 'Nathan');
+      expect(res.body).to.have.property('amount', 100);
     });
   });
 
   describe('GET /transfer', () => {
     it('Deve retornar 200 e uma lista de transferências', async () => {
-      const resposta = await request(app)
-        .get('/transfer')
-        .set('Authorization', `Bearer ${token}`);
-      expect(resposta.status).to.equal(200);
-      expect(resposta.body).to.be.an('array');
+      const res = await authRequest('get', '/transfer');
+
+      expect(res.status).to.equal(200);
+      expect(res.body).to.be.an('array');
     });
   });
 });

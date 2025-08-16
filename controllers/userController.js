@@ -3,9 +3,9 @@
 const express = require('express');
 const router = express.Router();
 const userService = require('../services/userService');
-const authMiddleware = require('../middleware/authMiddleware');
+const authHS256 = require('../middleware/authHS256');
 
-router.get('/balance', authMiddleware, (req, res) => {
+router.get('/balance', authHS256, (req, res) => {
     try {
         const username = req.user.username;
         const result = userService.getBalance(username);
@@ -15,7 +15,7 @@ router.get('/balance', authMiddleware, (req, res) => {
     }
 });
 
-router.post('/recharge', authMiddleware, (req, res) => {
+router.post('/recharge', authHS256, (req, res) => {
     const { username, amount } = req.body;
     try {
         const result = userService.rechargeCredit(username, amount);
