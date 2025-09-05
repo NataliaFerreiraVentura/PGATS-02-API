@@ -38,6 +38,9 @@
                     },
                     "401": {
                         "description": "Token não informado ou inválido"
+                    },
+                    "500": {
+                        "description": "Erro interno do servidor"
                     }
                 }
             }
@@ -79,6 +82,9 @@
                     },
                     "400": {
                         "description": "Usuário já existe"
+                    },
+                    "500": {
+                        "description": "Erro interno do servidor"
                     }
                 }
             }
@@ -114,6 +120,9 @@
                     },
                     "401": {
                         "description": "Credenciais inválidas"
+                    },
+                    "500": {
+                        "description": "Erro interno do servidor"
                     }
                 }
             }
@@ -124,6 +133,9 @@
                 "responses": {
                     "200": {
                         "description": "Lista de usuários"
+                    },
+                    "500": {
+                        "description": "Erro interno do servidor"
                     }
                 }
             }
@@ -164,6 +176,9 @@
                     },
                     "400": {
                         "description": "Erro na recarga de crédito"
+                    },
+                    "500": {
+                        "description": "Erro interno do servidor"
                     }
                 }
             }
@@ -208,6 +223,9 @@
                     },
                     "400": {
                         "description": "Erro na transferência"
+                    },
+                    "500": {
+                        "description": "Erro interno do servidor"
                     }
                 }
             },
@@ -221,6 +239,9 @@
                 "responses": {
                     "200": {
                         "description": "Lista de transferências"
+                    },
+                    "500": {
+                        "description": "Erro interno do servidor"
                     }
                 }
             }

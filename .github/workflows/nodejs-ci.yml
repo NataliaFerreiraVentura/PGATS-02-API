@@ -11,16 +11,25 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout repository
+    - name: Obter o repositório
       uses: actions/checkout@v3
 
-    - name: Set up Node.js
+    - name: Configurar o Node.js
       uses: actions/setup-node@v3
       with:
         node-version: '20.x'
 
-    - name: Install dependencies
+    - name: Instalando as dependencies
       run: npm install
 
-    - name: Run software tests
-      run: npm test
+    - name: Rodar testes de api via controller
+      run: npm run test-controller
+    
+    - name: Subir a API
+      run: npm start & # Inicia a API em segundo plano
+      
+    - name: Esperar a API iniciar
+      run: sleep 5 # Ajuste o tempo conforme necessário
+
+    - name: Rodar testes de api via HTTP
+      run: npx mocha test/external/**/*.test.js
