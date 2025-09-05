@@ -11,7 +11,11 @@ router.get('/balance', authHS256, (req, res) => {
         const result = userService.getBalance(username);
         res.status(200).json(result);
     } catch (err) {
-        res.status(400).json({ error: err.message });
+        if (err.message && err.message.startsWith('Usuário')) {
+            res.status(400).json({ error: err.message });
+        } else {
+            next(err);
+        }
     }
 });
 
@@ -21,7 +25,11 @@ router.post('/recharge', authHS256, (req, res) => {
         const result = userService.rechargeCredit(username, amount);
         res.status(200).json(result);
     } catch (err) {
-        res.status(400).json({ error: err.message });
+        if (err.message && err.message.startsWith('Dados inválidos')) {
+            res.status(400).json({ error: err.message });
+        } else {
+            next(err);
+        }
     }
 });
 
@@ -30,7 +38,11 @@ router.post('/register', (req, res) => {
         const user = userService.registerUser(req.body);
         res.status(201).json(user);
     } catch (err) {
-        res.status(400).json({ error: err.message });
+        if (err.message && (err.message.startsWith('Username') || err.message.startsWith('Usuário já existe'))) {
+            res.status(400).json({ error: err.message });
+        } else {
+            next(err);
+        }
     }
 });
 
@@ -39,7 +51,11 @@ router.post('/login', (req, res) => {
         const user = userService.loginUser(req.body);
         res.status(200).json({ message: 'Login realizado com sucesso', user });
     } catch (err) {
-        res.status(401).json({ error: err.message });
+        if (err.message && err.message.startsWith('Credenciais inválidas')) {
+            res.status(401).json({ error: err.message });
+        } else {
+            next(err);
+        }
     }
 });
 

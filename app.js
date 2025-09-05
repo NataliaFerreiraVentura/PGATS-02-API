@@ -13,4 +13,8 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 app.use('/users', userController);
 app.use('/transfer', authHS256, transferController);
 
+// Middleware de erro global
+const errorHandler = require('./middleware/errorHandler');
+app.use(errorHandler);
+
 module.exports = app;

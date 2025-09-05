@@ -6,12 +6,13 @@ const { expect } = require('chai');
 // Aplicação 
 const app = require('../../app');
 
-// Serviço a ser mockado
+// Middleware e Service
 const transferService = require('../../services/transferService');
 
-describe('Transfer Controller', () => {
-  let token;
+let token;
+let authRequest;
 
+describe('Transfer Controller', () => {
   // Cria usuário e faz login antes de todos os testes
   before(async () => {
     await request(app)
@@ -23,13 +24,13 @@ describe('Transfer Controller', () => {
       .send({ username: 'Naty', password: '123456' });
 
     token = loginRes.body.user.token;
+
+    // Helper para requests autenticadas
+    authRequest = (method, route) => request(app)[method](route).set('Authorization', `Bearer ${token}`);
   });
 
   // Limpa todos os mocks após cada teste
   afterEach(() => sinon.restore());
-
-  // Helper para requests autenticadas
-  const authRequest = (method, route) => request(app)[method](route).set('Authorization', `Bearer ${token}`);
 
   describe('POST /transfer', () => {
     it('Deve retornar 400 quando remetente ou destinatário não existem', async () => {
@@ -60,12 +61,14 @@ describe('Transfer Controller', () => {
       sinon.stub(transferService, 'transferValue').returns(mockData);
 
       const res = await authRequest('post', '/transfer')
+      
         .send({ from: 'Naty', to: 'Nathan', amount: 100 });
 
       expect(res.status).to.equal(201);
       expect(res.body).to.have.property('from', 'Naty');
       expect(res.body).to.have.property('to', 'Nathan');
       expect(res.body).to.have.property('amount', 100);
+      expect(res.body).to.have.property('date');
     });
   });
 
@@ -76,5 +79,21 @@ describe('Transfer Controller', () => {
       expect(res.status).to.equal(200);
       expect(res.body).to.be.an('array');
     });
+  });
+});
+
+describe('Transfer Controller - Erros', () => {
+  // Limpa mocks após cada teste
+  afterEach(() => sinon.restore());
+
+  it('Deve retornar 500 quando o service lança erro', async () => {
+    // Simula que o service lança um erro
+    sinon.stub(transferService, 'transferValue').throws(new Error('Erro interno do servidor'));
+
+    const res = await authRequest('post', '/transfer')
+      .send({ from: 'A', to: 'B', amount: 100 });
+
+    expect(res.status).to.equal(500);
+    expect(res.body).to.have.property('error', 'Erro interno do servidor');
   });
 });
