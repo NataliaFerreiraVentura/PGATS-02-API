@@ -113,7 +113,7 @@ describe('Transfer Controller', () => {
   });
 
   // ----------------------------
-  // Testes GET /transfer
+  // Testes GET /transfer - listagem de transferências
   // ----------------------------
   describe('GET /transfer', () => {
     it('Deve retornar 200 e uma lista de transferências', async () => {
