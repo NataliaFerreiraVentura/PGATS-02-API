@@ -24,7 +24,13 @@ jobs:
 
     - name: Rodar testes de api via controller
       run: npm run test-controller
-    
+
+    - name: Upload mochawesome report (controller)
+      uses: actions/upload-artifact@v3
+      with:
+        name: mochawesome-report-controller
+        path: mochawesome-report/mochawesome.html
+
     - name: Subir a API
       run: npm start & # Inicia a API em segundo plano
       
@@ -32,4 +38,10 @@ jobs:
       run: sleep 5 # Ajuste o tempo conforme necessário
 
     - name: Rodar testes de api via HTTP
-      run: npx mocha test/external/**/*.test.js
+      run: npx mocha test/external/**/*.test.js --reporter mochawesome
+
+    - name: Upload mochawesome report
+      uses: actions/upload-artifact@v4
+      with:
+        name: mochawesome-report
+        path: mochawesome-report/mochawesome.html

@@ -1,0 +1,406 @@
+{
+  "stats": {
+    "suites": 6,
+    "tests": 9,
+    "passes": 9,
+    "pending": 0,
+    "failures": 0,
+    "start": "2025-09-15T02:23:23.367Z",
+    "end": "2025-09-15T02:23:23.826Z",
+    "duration": 459,
+    "testsRegistered": 9,
+    "passPercent": 100,
+    "pendingPercent": 0,
+    "other": 0,
+    "hasOther": false,
+    "skipped": 0,
+    "hasSkipped": false
+  },
+  "results": [
+    {
+      "uuid": "f5237334-d385-423f-8aae-223a5eebdfde",
+      "title": "",
+      "fullFile": "",
+      "file": "",
+      "beforeHooks": [],
+      "afterHooks": [],
+      "tests": [],
+      "suites": [
+        {
+          "uuid": "3c7b3c6b-11aa-4b56-9fb1-103569159c93",
+          "title": "Transfer Controller",
+          "fullFile": "C:\\Users\\natyv\\Documents\\ESTUDOS_AUTOMACAO_QA\\POS-GRADUAÇÃO\\PGATS-API\\test\\controller\\transferController.test.js",
+          "file": "\\test\\controller\\transferController.test.js",
+          "beforeHooks": [
+            {
+              "title": "\"before all\" hook in \"Transfer Controller\"",
+              "fullTitle": "Transfer Controller \"before all\" hook in \"Transfer Controller\"",
+              "timedOut": false,
+              "duration": 121,
+              "state": null,
+              "speed": null,
+              "pass": false,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "// Cria os usuários uma única vez\nawait registerUser('Naty', '123456', ['Nathan']);\nawait registerUser('Nathan', '123456', []);",
+              "err": {},
+              "uuid": "68741de4-a055-495d-b55f-764f7ee3f278",
+              "parentUUID": "3c7b3c6b-11aa-4b56-9fb1-103569159c93",
+              "isHook": true,
+              "skipped": false
+            },
+            {
+              "title": "\"before each\" hook in \"Transfer Controller\"",
+              "fullTitle": "Transfer Controller \"before each\" hook in \"Transfer Controller\"",
+              "timedOut": false,
+              "duration": 14,
+              "state": null,
+              "speed": null,
+              "pass": false,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "// Faz login e cria helper de requisição autenticada\ntoken = await loginAndGetToken('Naty', '123456');\nauthed = authRequest(token);",
+              "err": {},
+              "uuid": "e4c763a3-6225-4647-8023-e02cb9ee9ebd",
+              "parentUUID": "3c7b3c6b-11aa-4b56-9fb1-103569159c93",
+              "isHook": true,
+              "skipped": false
+            }
+          ],
+          "afterHooks": [
+            {
+              "title": "\"after each\" hook in \"Transfer Controller\"",
+              "fullTitle": "Transfer Controller \"after each\" hook in \"Transfer Controller\"",
+              "timedOut": false,
+              "duration": 0,
+              "state": null,
+              "speed": null,
+              "pass": false,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "sinon.restore()",
+              "err": {},
+              "uuid": "694096dd-84ae-4879-97d8-058cad9772fc",
+              "parentUUID": "3c7b3c6b-11aa-4b56-9fb1-103569159c93",
+              "isHook": true,
+              "skipped": false
+            }
+          ],
+          "tests": [],
+          "suites": [
+            {
+              "uuid": "3b2421a9-c37f-49de-a5ea-a81434055c40",
+              "title": "POST /transfer",
+              "fullFile": "C:\\Users\\natyv\\Documents\\ESTUDOS_AUTOMACAO_QA\\POS-GRADUAÇÃO\\PGATS-API\\test\\controller\\transferController.test.js",
+              "file": "\\test\\controller\\transferController.test.js",
+              "beforeHooks": [],
+              "afterHooks": [],
+              "tests": [
+                {
+                  "title": "Deve retornar 400 quando saldo é insuficiente",
+                  "fullTitle": "Transfer Controller POST /transfer Deve retornar 400 quando saldo é insuficiente",
+                  "timedOut": false,
+                  "duration": 49,
+                  "state": "passed",
+                  "speed": "medium",
+                  "pass": true,
+                  "fail": false,
+                  "pending": false,
+                  "context": null,
+                  "code": "const userModel = require('../../models/userModel');\nconst naty = userModel.users.find(u => u.username === 'Naty');\nif (naty) naty.balance = 0; // mocka saldo insuficiente\n// Recarga mínima\nawait authed('post', '/users/recharge').send({ username: 'Naty', amount: 10 });\nconst res = await authed('post', '/transfer')\n  .send({ from: 'Naty', to: 'Nathan', amount: 100 });\nexpect(res.status).to.equal(400);\nexpect(res.body).to.have.property('error', 'Saldo insuficiente');",
+                  "err": {},
+                  "uuid": "b019778b-9bf9-4ac8-9d73-3535bce9d03b",
+                  "parentUUID": "3b2421a9-c37f-49de-a5ea-a81434055c40",
+                  "isHook": false,
+                  "skipped": false
+                },
+                {
+                  "title": "Deve retornar 500 quando ocorre erro na transferência",
+                  "fullTitle": "Transfer Controller POST /transfer Deve retornar 500 quando ocorre erro na transferência",
+                  "timedOut": false,
+                  "duration": 29,
+                  "state": "passed",
+                  "speed": "fast",
+                  "pass": true,
+                  "fail": false,
+                  "pending": false,
+                  "context": null,
+                  "code": "// Simula erro no serviço\nsinon.stub(transferService, 'transferValue')\n  .throws(new Error('Erro simulado na transferência'));\nconst res = await authed('post', '/transfer')\n  .send({ from: 'Naty', to: 'Nathan', amount: 100 });\nexpect(res.status).to.equal(500);\nexpect(res.body).to.have.property('error', 'Erro simulado na transferência');",
+                  "err": {},
+                  "uuid": "9ba00db0-6f8a-49d8-8a65-b635c651668f",
+                  "parentUUID": "3b2421a9-c37f-49de-a5ea-a81434055c40",
+                  "isHook": false,
+                  "skipped": false
+                },
+                {
+                  "title": "Deve retornar 400 quando usuário remetente ou destinatário não existe",
+                  "fullTitle": "Transfer Controller POST /transfer Deve retornar 400 quando usuário remetente ou destinatário não existe",
+                  "timedOut": false,
+                  "duration": 32,
+                  "state": "passed",
+                  "speed": "fast",
+                  "pass": true,
+                  "fail": false,
+                  "pending": false,
+                  "context": null,
+                  "code": "const res = await authed('post', '/transfer')\n  .send({ from: 'INEXISTENTE', to: 'QA', amount: 100 });\nexpect(res.status).to.equal(400);\nexpect(res.body).to.have.property('error', 'Usuário remetente ou destinatário não encontrado');\nconsole.log('Resposta do corpo:', res.body);",
+                  "err": {},
+                  "uuid": "1d36fbcc-cbf6-451c-8cbc-7853f578de46",
+                  "parentUUID": "3b2421a9-c37f-49de-a5ea-a81434055c40",
+                  "isHook": false,
+                  "skipped": false
+                },
+                {
+                  "title": "Deve retornar 400 usando mock quando remetente não existe",
+                  "fullTitle": "Transfer Controller POST /transfer Deve retornar 400 usando mock quando remetente não existe",
+                  "timedOut": false,
+                  "duration": 20,
+                  "state": "passed",
+                  "speed": "fast",
+                  "pass": true,
+                  "fail": false,
+                  "pending": false,
+                  "context": null,
+                  "code": "const err = new Error('Usuário remetente ou destinatário não encontrado');\nerr.status = 400;\nsinon.stub(transferService, 'transferValue').throws(err);\nconst res = await authed('post', '/transfer')\n  .send({ from: 'QA', to: 'JULIO', amount: 100 });\nexpect(res.status).to.equal(400);\nexpect(res.body).to.have.property('error', 'Usuário remetente ou destinatário não encontrado');",
+                  "err": {},
+                  "uuid": "09fd00cc-2ed9-4d23-a14e-7ec87556c648",
+                  "parentUUID": "3b2421a9-c37f-49de-a5ea-a81434055c40",
+                  "isHook": false,
+                  "skipped": false
+                },
+                {
+                  "title": "Deve retornar 201 usando mock quando a transferência é válida",
+                  "fullTitle": "Transfer Controller POST /transfer Deve retornar 201 usando mock quando a transferência é válida",
+                  "timedOut": false,
+                  "duration": 21,
+                  "state": "passed",
+                  "speed": "fast",
+                  "pass": true,
+                  "fail": false,
+                  "pending": false,
+                  "context": null,
+                  "code": "const respostaEsperada = require('../fixture/Respostas/transferFixtureComSucesso.json').transferList[0];\n// Mocka transferência bem-sucedida\nconst mockData = {\n  from: 'Naty',\n  to: 'Nathan',\n  amount: 100,\n  date: new Date().toISOString()\n};\nsinon.stub(transferService, 'transferValue').returns(mockData);\nconst res = await authed('post', '/transfer')\n  .send({ from: 'Naty', to: 'Nathan', amount: 100 });\nexpect(res.status).to.equal(201);\n// Remove data para comparação exata\ndelete res.body.date;\nconst respostaSemData = { ...respostaEsperada };\ndelete respostaSemData.date;\nexpect(res.body).to.deep.equal(respostaSemData);\nexpect(res.status).to.equal(201);\nconsole.log('Resposta do corpo:', res.body);",
+                  "err": {},
+                  "uuid": "2459f2f2-9ded-4786-896c-8f159cb4e0c8",
+                  "parentUUID": "3b2421a9-c37f-49de-a5ea-a81434055c40",
+                  "isHook": false,
+                  "skipped": false
+                }
+              ],
+              "suites": [],
+              "passes": [
+                "b019778b-9bf9-4ac8-9d73-3535bce9d03b",
+                "9ba00db0-6f8a-49d8-8a65-b635c651668f",
+                "1d36fbcc-cbf6-451c-8cbc-7853f578de46",
+                "09fd00cc-2ed9-4d23-a14e-7ec87556c648",
+                "2459f2f2-9ded-4786-896c-8f159cb4e0c8"
+              ],
+              "failures": [],
+              "pending": [],
+              "skipped": [],
+              "duration": 151,
+              "root": false,
+              "rootEmpty": false,
+              "_timeout": 10000
+            },
+            {
+              "uuid": "34983e73-9b66-4c2c-9445-eb226bc4b683",
+              "title": "GET /transfer",
+              "fullFile": "C:\\Users\\natyv\\Documents\\ESTUDOS_AUTOMACAO_QA\\POS-GRADUAÇÃO\\PGATS-API\\test\\controller\\transferController.test.js",
+              "file": "\\test\\controller\\transferController.test.js",
+              "beforeHooks": [],
+              "afterHooks": [],
+              "tests": [
+                {
+                  "title": "Deve retornar 200 e uma lista de transferências",
+                  "fullTitle": "Transfer Controller GET /transfer Deve retornar 200 e uma lista de transferências",
+                  "timedOut": false,
+                  "duration": 13,
+                  "state": "passed",
+                  "speed": "fast",
+                  "pass": true,
+                  "fail": false,
+                  "pending": false,
+                  "context": null,
+                  "code": "const res = await authed('get', '/transfer');\nexpect(res.status).to.equal(200);\nexpect(res.body).to.be.an('array');",
+                  "err": {},
+                  "uuid": "81bdf226-bccd-44fc-88ad-c84e6e109523",
+                  "parentUUID": "34983e73-9b66-4c2c-9445-eb226bc4b683",
+                  "isHook": false,
+                  "skipped": false
+                }
+              ],
+              "suites": [],
+              "passes": [
+                "81bdf226-bccd-44fc-88ad-c84e6e109523"
+              ],
+              "failures": [],
+              "pending": [],
+              "skipped": [],
+              "duration": 13,
+              "root": false,
+              "rootEmpty": false,
+              "_timeout": 10000
+            }
+          ],
+          "passes": [],
+          "failures": [],
+          "pending": [],
+          "skipped": [],
+          "duration": 0,
+          "root": false,
+          "rootEmpty": false,
+          "_timeout": 10000
+        },
+        {
+          "uuid": "8d0946b8-94b0-4efb-ac64-97be2c526760",
+          "title": "User Controller",
+          "fullFile": "C:\\Users\\natyv\\Documents\\ESTUDOS_AUTOMACAO_QA\\POS-GRADUAÇÃO\\PGATS-API\\test\\controller\\userController.test.js",
+          "file": "\\test\\controller\\userController.test.js",
+          "beforeHooks": [],
+          "afterHooks": [],
+          "tests": [],
+          "suites": [
+            {
+              "uuid": "fb0099a0-b472-46e0-8146-9c5e7ee6d410",
+              "title": "GET /users",
+              "fullFile": "C:\\Users\\natyv\\Documents\\ESTUDOS_AUTOMACAO_QA\\POS-GRADUAÇÃO\\PGATS-API\\test\\controller\\userController.test.js",
+              "file": "\\test\\controller\\userController.test.js",
+              "beforeHooks": [],
+              "afterHooks": [],
+              "tests": [
+                {
+                  "title": "Quando pesquiso usuários, recebo uma lista",
+                  "fullTitle": "User Controller GET /users Quando pesquiso usuários, recebo uma lista",
+                  "timedOut": false,
+                  "duration": 11,
+                  "state": "passed",
+                  "speed": "fast",
+                  "pass": true,
+                  "fail": false,
+                  "pending": false,
+                  "context": null,
+                  "code": "const resposta = await request(app)\n  .get('/users');\nexpect(resposta.status).to.equal(200);\nexpect(resposta.body).to.be.an('array');",
+                  "err": {},
+                  "uuid": "944d3371-ece4-464c-80e1-27c1f5d8298e",
+                  "parentUUID": "fb0099a0-b472-46e0-8146-9c5e7ee6d410",
+                  "isHook": false,
+                  "skipped": false
+                }
+              ],
+              "suites": [],
+              "passes": [
+                "944d3371-ece4-464c-80e1-27c1f5d8298e"
+              ],
+              "failures": [],
+              "pending": [],
+              "skipped": [],
+              "duration": 11,
+              "root": false,
+              "rootEmpty": false,
+              "_timeout": 10000
+            },
+            {
+              "uuid": "008f3906-096d-4c6e-b369-f117aa7d8901",
+              "title": "POST /users/login",
+              "fullFile": "C:\\Users\\natyv\\Documents\\ESTUDOS_AUTOMACAO_QA\\POS-GRADUAÇÃO\\PGATS-API\\test\\controller\\userController.test.js",
+              "file": "\\test\\controller\\userController.test.js",
+              "beforeHooks": [],
+              "afterHooks": [],
+              "tests": [
+                {
+                  "title": "MOCK: Quando faço login com credenciais invalidas , recebo 401",
+                  "fullTitle": "User Controller POST /users/login MOCK: Quando faço login com credenciais invalidas , recebo 401",
+                  "timedOut": false,
+                  "duration": 11,
+                  "state": "passed",
+                  "speed": "fast",
+                  "pass": true,
+                  "fail": false,
+                  "pending": false,
+                  "context": null,
+                  "code": "// Mockar apenas a função transfer do service\nconst userServiceMock = sinon.stub(userService, 'loginUser');\nuserServiceMock.throws(new Error('Credenciais inválidas'));\nconst resposta = await request(app)\n  .post('/users/login')\n  .send({\n    username: \"QA\",\n    password: \"12345\"\n  });\nexpect(resposta.status).to.equal(401);\nexpect(resposta.body).to.have.property('error', 'Credenciais inválidas');\nsinon.restore();",
+                  "err": {},
+                  "uuid": "03cd869e-9c44-4cd5-b670-8c833a79c2a6",
+                  "parentUUID": "008f3906-096d-4c6e-b369-f117aa7d8901",
+                  "isHook": false,
+                  "skipped": false
+                },
+                {
+                  "title": "Quando faço login com credenciais invalidas , recebo 401",
+                  "fullTitle": "User Controller POST /users/login Quando faço login com credenciais invalidas , recebo 401",
+                  "timedOut": false,
+                  "duration": 10,
+                  "state": "passed",
+                  "speed": "fast",
+                  "pass": true,
+                  "fail": false,
+                  "pending": false,
+                  "context": null,
+                  "code": "const resposta = await request(app)\n  .post('/users/login')\n  .send({\n    username: \"QA\",\n    password: \"12345\"\n  });\nexpect(resposta.status).to.equal(401);\nexpect(resposta.body).to.have.property('error', 'Credenciais inválidas');",
+                  "err": {},
+                  "uuid": "d33af7fc-e86f-4eac-b2fd-62c5726b9aa8",
+                  "parentUUID": "008f3906-096d-4c6e-b369-f117aa7d8901",
+                  "isHook": false,
+                  "skipped": false
+                }
+              ],
+              "suites": [],
+              "passes": [
+                "03cd869e-9c44-4cd5-b670-8c833a79c2a6",
+                "d33af7fc-e86f-4eac-b2fd-62c5726b9aa8"
+              ],
+              "failures": [],
+              "pending": [],
+              "skipped": [],
+              "duration": 21,
+              "root": false,
+              "rootEmpty": false,
+              "_timeout": 10000
+            }
+          ],
+          "passes": [],
+          "failures": [],
+          "pending": [],
+          "skipped": [],
+          "duration": 0,
+          "root": false,
+          "rootEmpty": false,
+          "_timeout": 10000
+        }
+      ],
+      "passes": [],
+      "failures": [],
+      "pending": [],
+      "skipped": [],
+      "duration": 0,
+      "root": true,
+      "rootEmpty": true,
+      "_timeout": 10000
+    }
+  ],
+  "meta": {
+    "mocha": {
+      "version": "11.7.1"
+    },
+    "mochawesome": {
+      "options": {
+        "quiet": false,
+        "reportFilename": "mochawesome",
+        "saveHtml": true,
+        "saveJson": true,
+        "consoleReporter": "spec",
+        "useInlineDiffs": false,
+        "code": true
+      },
+      "version": "7.1.3"
+    },
+    "marge": {
+      "options": null,
+      "version": "6.2.0"
+    }
+  }
+}
