@@ -9,7 +9,7 @@ const {
 
 describe('Transfer Controller - external', () => {
     it('Deve retornar 400 se destinatário não estiver cadastrado', async () => {
-        // Não cadastra Nathan
+        // Não cadastra o destinatário
         const userData = {
             from: 'Naty',
             to: 'QAS',
@@ -68,7 +68,7 @@ describe('Transfer Controller - external', () => {
     });
 });
 
-describe('Transfer Controller - external - outro exeemplo mostrado em aula', () => {
+describe('Transfer Controller - external - outro exemplo mostrado em aula', () => {
 
     it('Deve retornar 201 quando a transferência é válida', async () => {
         //1- criar usuario
