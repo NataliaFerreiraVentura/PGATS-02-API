@@ -22,6 +22,7 @@
   },
   "devDependencies": {
     "chai": "4.5.0",
+    "chai-exclude": "^2.1.1",
     "mocha": "^11.7.1",
     "sinon": "^21.0.0",
     "supertest": "^7.1.4"

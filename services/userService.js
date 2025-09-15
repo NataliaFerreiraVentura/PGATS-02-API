@@ -1,7 +1,7 @@
 const { users } = require('../models/userModel');
 const jwt = require('jsonwebtoken');
 
-const SECRET = process.env.JWT_SECRET || 'pgats-api-secret-1234567890abcdef';
+const SECRET = process.env.JWT_SECRET || 'X9f8H7j6K5l4M3n2P1q0R9s8T7v6W5z4';
 
 function generateToken(payload) {
     return jwt.sign(payload, SECRET, { expiresIn: '1h', algorithm: 'HS256' });
@@ -14,7 +14,8 @@ function registerUser({ username, password, favorecidos = [] }) {
     if (users.find(u => u.username === username)) {
         throw new Error('Usuário já existe');
     }
-    const user = { username, password, favorecidos };
+    // Inicializa balance e favorecidos
+    const user = { username, password, favorecidos: Array.isArray(favorecidos) ? favorecidos : [], balance: 0 };
     users.push(user);
     return user;
 }
