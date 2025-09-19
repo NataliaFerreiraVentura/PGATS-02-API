@@ -22,10 +22,7 @@
                                 "schema": {
                                     "type": "object",
                                     "properties": {
-                                        "username": {
-                                            "type": "string"
-                                        },
-                                        "balance": {
+                                        "saldo": {
                                             "type": "number"
                                         }
                                     }

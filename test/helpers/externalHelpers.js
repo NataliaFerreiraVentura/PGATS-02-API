@@ -12,6 +12,9 @@ async function loginAndGetTokenExternal(username, password) {
     const res = await request(BASE_URL)
         .post('/users/login')
         .send({ username, password });
+    if (!res.body.user || !res.body.user.token) {
+        throw new Error(`Login falhou para ${username}: token não encontrado. Resposta: ${JSON.stringify(res.body)}`);
+    }
     return res.body.user.token;
 }
 

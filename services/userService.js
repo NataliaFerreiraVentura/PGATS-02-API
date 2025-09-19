@@ -11,21 +11,27 @@ function registerUser({ username, password, favorecidos = [] }) {
     if (!username || !password) {
         throw new Error('Username e password são obrigatórios');
     }
-    if (users.find(u => u.username === username)) {
-        throw new Error('Usuário já existe');
+    const existingUser = users.find(u => u.username === username);
+    if (existingUser) {
+        return existingUser;
     }
+    const bcrypt = require('bcryptjs');
+    const hashedPassword = bcrypt.hashSync(password, 8);
     // Inicializa balance e favorecidos
-    const user = { username, password, favorecidos: Array.isArray(favorecidos) ? favorecidos : [], balance: 0 };
+    const user = { username, password: hashedPassword, favorecidos: Array.isArray(favorecidos) ? favorecidos : [], saldo: 0 };
     users.push(user);
     return user;
 }
 
 function loginUser({ username, password }) {
-    const user = users.find(u => u.username === username && u.password === password);
+    const bcrypt = require('bcryptjs');
+    const user = users.find(u => u.username === username && bcrypt.compareSync(password, u.password));
     if (!user) throw new Error('Credenciais inválidas');
     // Gera JWT
     const token = generateToken({ username: user.username });
-    return { ...user, token };
+    // Retorna saldo como 'saldo'
+    const { balance, saldo, ...rest } = user;
+    return { ...rest, saldo: user.saldo ?? user.balance ?? 0, token };
 }
 
 function getUsers() {
@@ -40,11 +46,11 @@ function rechargeCredit(username, amount) {
     if (!user) {
         throw new Error('Usuário não encontrado');
     }
-    if (user.balance === undefined) {
-        user.balance = 0;
+    if (user.saldo === undefined) {
+        user.saldo = 0;
     }
-    user.balance += amount;
-    return { username: user.username, balance: user.balance };
+    user.saldo += amount;
+    return { username: user.username, saldo: user.saldo };
 }
 
 function getBalance(username) {
@@ -52,7 +58,7 @@ function getBalance(username) {
     if (!user) {
         throw new Error('Usuário não encontrado');
     }
-    return { username: user.username, balance: user.balance || 0 };
+    return { username: user.username, saldo: user.saldo ?? user.balance ?? 0 };
 }
 
 module.exports = {

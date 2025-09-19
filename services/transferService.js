@@ -10,11 +10,11 @@ function transferValue({ from, to, amount }) {
         throw err;
     }
 
-    // Garante que favorecidos e balance estejam inicializados
+    // Garante que favorecidos e saldo estejam inicializados
     if (!Array.isArray(sender.favorecidos)) sender.favorecidos = [];
     if (!Array.isArray(recipient.favorecidos)) recipient.favorecidos = [];
-    if (typeof sender.balance !== 'number') sender.balance = 0;
-    if (typeof recipient.balance !== 'number') recipient.balance = 0;
+    if (typeof sender.saldo !== 'number') sender.saldo = 0;
+    if (typeof recipient.saldo !== 'number') recipient.saldo = 0;
 
     if (typeof amount !== 'number' || amount <= 0) {
         const err = new Error('Valor da transferência deve ser maior que zero');
@@ -22,7 +22,7 @@ function transferValue({ from, to, amount }) {
         throw err;
     }
 
-    if (sender.balance < amount) {
+    if (sender.saldo < amount) {
         const err = new Error('Saldo insuficiente');
         err.status = 400;
         throw err;
@@ -30,8 +30,8 @@ function transferValue({ from, to, amount }) {
 
     // Regra de favorecido removida: qualquer valor pode ser transferido para qualquer usuário
 
-    sender.balance -= amount;
-    recipient.balance += amount;
+    sender.saldo -= amount;
+    recipient.saldo += amount;
 
     const transfer = { from, to, amount, date: new Date().toISOString() };
     transfers.push(transfer);
