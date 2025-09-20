@@ -52,24 +52,24 @@ describe('Transfer Controller', () => {
       expect(res.body).to.have.property('error', 'Erro simulado na transferência');
     });
 
-    it('Deve retornar 400 quando usuário remetente ou destinatário não existe', async () => {
+    it('Deve retornar 403 quando usuário autenticado não bate com remetente', async () => {
       const res = await authed('post', '/transfer')
         .send({ from: 'INEXISTENTE', to: 'QA', amount: 100 });
 
-      expect(res.status).to.equal(400);
-      expect(res.body).to.have.property('error', 'Usuário remetente ou destinatário não encontrado');
+      expect(res.status).to.equal(403);
+      expect(res.body).to.have.property('error', 'Usuário autenticado não corresponde ao remetente da transferência');
     });
 
-    it('Deve retornar 400 usando mock quando remetente não existe', async () => {
-      const err = new Error('Usuário remetente ou destinatário não encontrado');
-      err.status = 400;
+    it('Deve retornar 403 usando mock quando remetente não bate com autenticado', async () => {
+      const err = new Error('Usuário autenticado não corresponde ao remetente da transferência');
+      err.status = 403;
       sinon.stub(transferService, 'transferValue').throws(err);
 
       const res = await authed('post', '/transfer')
         .send({ from: 'QA', to: 'JULIO', amount: 100 });
 
-      expect(res.status).to.equal(400);
-      expect(res.body).to.have.property('error', 'Usuário remetente ou destinatário não encontrado');
+      expect(res.status).to.equal(403);
+      expect(res.body).to.have.property('error', 'Usuário autenticado não corresponde ao remetente da transferência');
     });
 
     it('Deve retornar 201 usando mock quando a transferência é válida', async () => {
