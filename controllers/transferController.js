@@ -11,6 +11,10 @@ router.post('/', authHS256, (req, res, next) => {
     if (!from || !to || typeof amount !== 'number' || amount <= 0) {
         return res.status(400).json({ error: 'Dados inválidos para transferência' });
     }
+    // Validação: o campo 'from' deve ser igual ao usuário autenticado
+    if (req.user.username !== from) {
+        return res.status(403).json({ error: 'Usuário autenticado não corresponde ao remetente da transferência' });
+    }
     try {
         const transfer = transferService.transferValue(req.body);
         res.status(201).json(transfer);
