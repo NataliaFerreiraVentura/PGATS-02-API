@@ -21,6 +21,10 @@ router.get('/balance', authHS256, (req, res) => {
 
 router.post('/recharge', authHS256, (req, res) => {
     const { username, amount } = req.body;
+    // Validação: username deve ser igual ao usuário autenticado
+    if (req.user.username !== username) {
+        return res.status(403).json({ error: 'Usuário autenticado não corresponde ao username informado' });
+    }
     try {
         const result = userService.rechargeCredit(username, amount);
         res.status(200).json(result);

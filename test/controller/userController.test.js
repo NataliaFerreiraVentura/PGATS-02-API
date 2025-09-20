@@ -1,3 +1,4 @@
+
 // Bibliotecas
 const request = require('supertest');
 const sinon = require('sinon');
@@ -63,6 +64,14 @@ describe('User Controller', () => {
       expect(resposta.body.user).to.have.property('favorecidos')
     });
 
+    it('Não deve permitir registrar username já existente via REST', async () => {
+      const resposta = await request(app)
+       .post('/users/register')
+       .send({ username: 'Naty', password: '123456' });
+      expect(resposta.status).to.equal(400);
+      expect(resposta.body).to.have.property('error');
+    });
+
   });
 
   describe('GET /users/balance', () => {
@@ -123,7 +132,7 @@ describe('User Controller', () => {
         .set('Authorization', `Bearer ${token}`);
       const saldoInicial = consultaInicial.body.saldo;
       console.log(`Saldo inicial: ${saldoInicial}`);
-      
+
       // Realiza recarga
       const valorRecarga = 100;
       const res = await request(app)
@@ -138,9 +147,9 @@ describe('User Controller', () => {
       expect(res.body).to.have.property('username', 'Naty');
 
       // Consulta saldo após recarga
-     const respostaConsulta = await request(app)
-       .get('/users/balance')
-       .set('Authorization', `Bearer ${token}`);
+      const respostaConsulta = await request(app)
+        .get('/users/balance')
+        .set('Authorization', `Bearer ${token}`);
       console.log(`Saldo após recarga: ${respostaConsulta.body.saldo}`);
       expect(respostaConsulta.status).to.equal(200);
       expect(respostaConsulta.body).to.have.property('saldo');

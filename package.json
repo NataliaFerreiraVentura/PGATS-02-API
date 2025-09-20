@@ -4,20 +4,22 @@
   "description": "Esta API permite registrar usuários, realizar login, consultar usuários e efetuar transferências de valores entre usuários. O banco de dados é em memória, ideal para estudos de automação e testes de API.",
   "main": "app.js",
   "scripts": {
+    "start:graphql": "node graphql/server.js",
     "test": "mocha test/**/*.test.js --timeout 10000 --reporter mochawesome",
     "test-external": "mocha test/external/**/*.test.js --timeout 10000 --reporter mochawesome",
     "test-controller": "mocha test/controller/**/*.test.js --timeout 10000 --reporter mochawesome",
     "start": "node server.js"
-
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "type": "commonjs",
   "dependencies": {
+    "apollo-server-express": "^3.13.0",
     "bcrypt": "^6.0.0",
     "bcryptjs": "^3.0.2",
-    "express": "^5.1.0",
+    "express": "^4.18.2",
+    "graphql": "^16.11.0",
     "jsonwebtoken": "^9.0.2",
     "swagger-ui-express": "^5.0.1"
   },

@@ -13,7 +13,7 @@ function registerUser({ username, password, favorecidos = [] }) {
     }
     const existingUser = users.find(u => u.username === username);
     if (existingUser) {
-        return existingUser;
+        throw new Error('Usuário já existe');
     }
     const bcrypt = require('bcryptjs');
     const hashedPassword = bcrypt.hashSync(password, 8);
