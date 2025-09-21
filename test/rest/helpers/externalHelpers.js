@@ -1,6 +1,7 @@
 const request = require('supertest');
+require('dotenv').config();
 
-const BASE_URL = 'http://localhost:3000';
+const BASE_URL = process.env.BASE_URL_REST;
 
 async function registerUserExternal(username, password, favorecidos = []) {
     await request(BASE_URL)

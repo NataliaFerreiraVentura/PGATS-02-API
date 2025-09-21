@@ -19,6 +19,10 @@ Esta API permite registrar usuários, realizar login, consultar usuários e efet
 - `server.js` - Inicialização do servidor
 - `swagger.json` - Documentação da API
 
+## Configuração
+
+Antes de seguir, crie um arquivo .env na pasta raiz contendo as propriedades BASE_URL_REST E BASE_URL_GRAPHQL, com a URL desses serviços.
+
 ## Como executar
 
 ```cmd

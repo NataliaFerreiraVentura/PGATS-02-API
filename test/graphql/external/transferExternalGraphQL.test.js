@@ -1,5 +1,6 @@
 const request = require('supertest');
 const { expect, use } = require('chai');
+require('dotenv').config();
 
 const chaiExclude = require('chai-exclude');
 use(chaiExclude);
@@ -9,7 +10,7 @@ describe('Testes de transferência - GraphQL', () => {
     before(async () => {
 
         const LoginUser = require('../fixtures/Request/Login/loginUser.json')
-        const resposta = await request('http://localhost:4000/graphql')
+        const resposta = await request(process.env.BASE_URL_GRAPHQL)
             .post('')
             .send(LoginUser);
         token = resposta.body.data.loginUser.token;
@@ -21,7 +22,7 @@ describe('Testes de transferência - GraphQL', () => {
 
     it('Validar que é possivel transferir grana entre duas contas', async () => {
         const respostaEsperada = require('../fixtures/Request/Respostas/ValidarQueEPossivelTransferirGranaEntreDuasContas.json')
-        const respostasTransferencia = await request('http://localhost:4000/graphql')
+        const respostasTransferencia = await request(process.env.BASE_URL_GRAPHQL)
             .post('')
             .set('Authorization', `Bearer ${token}`)
             .send(createTransfer);
@@ -34,7 +35,7 @@ describe('Testes de transferência - GraphQL', () => {
 
     it('Quando não houver saldo, deve retornar erro saldo insuficiente', async () => {
         createTransfer.variables.valor = 10000.0; // Valor alto para garantir saldo insuficiente
-        const respostasTransferencia = await request('http://localhost:4000/graphql')
+        const respostasTransferencia = await request(process.env.BASE_URL_GRAPHQL)
             .post('')
             .set('Authorization', `Bearer ${token}`)
             .send(createTransfer)
