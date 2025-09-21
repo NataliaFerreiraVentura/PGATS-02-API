@@ -28,12 +28,18 @@ function transferValue({ from, to, amount }) {
         throw err;
     }
 
-    // Regra de favorecido removida: qualquer valor pode ser transferido para qualquer usuário
+    // Regra: transferências para destinatários não favorecidos só podem ser realizadas se o valor for menor que R$ 5.000,00
+    const isFavorecido = sender.favorecidos.includes(to);
+    if (!isFavorecido && amount >= 5000) {
+        const err = new Error('Transferências acima de R$ 5.000,00 só são permitidas para favorecidos');
+        err.status = 403;
+        throw err;
+    }
 
     sender.saldo -= amount;
     recipient.saldo += amount;
 
-    const transfer = { from, to, amount, date: new Date().toISOString() };
+    const transfer = { from, to, valor: amount, date: new Date().toISOString() };
     transfers.push(transfer);
     return transfer;
 }

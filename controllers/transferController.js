@@ -6,9 +6,9 @@ const transferService = require('../services/transferService');
 
 
 router.post('/', authHS256, (req, res, next) => {
-    const { from, to, amount } = req.body;
+    const { from, to, valor } = req.body;
     // Validação básica dos campos
-    if (!from || !to || typeof amount !== 'number' || amount <= 0) {
+    if (!from || !to || typeof valor !== 'number' || valor <= 0) {
         return res.status(400).json({ error: 'Dados inválidos para transferência' });
     }
     // Validação: o campo 'from' deve ser igual ao usuário autenticado
@@ -16,7 +16,7 @@ router.post('/', authHS256, (req, res, next) => {
         return res.status(403).json({ error: 'Usuário autenticado não corresponde ao remetente da transferência' });
     }
     try {
-        const transfer = transferService.transferValue(req.body);
+        const transfer = transferService.transferValue({ from, to, amount: valor });
         res.status(201).json(transfer);
     } catch (err) {
         if (err.status) {

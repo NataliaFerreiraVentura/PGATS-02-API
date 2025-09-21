@@ -3,13 +3,13 @@
 const sinon = require('sinon');
 const { expect } = require('chai');
 const request = require('supertest');
-const transferService = require('../../services/transferService');
+const transferService = require('../../../services/transferService');
 const { loginAndGetToken, authRequest } = require('../helpers/globalHelpers');
-const app = require('../../app');
+const app = require('../../../app');
 describe('Transfer Controller', () => {
   let token, authed;
 
-  beforeEach(async () => {
+  before(async () => {
     // Faz login e cria helper de requisição autenticada
     token = await loginAndGetToken('Naty', '123456');
     authed = authRequest(token);
@@ -26,7 +26,7 @@ describe('Transfer Controller', () => {
   describe('POST /transfer', () => {
 
     it('Deve retornar 400 quando saldo é insuficiente', async () => {
-      const userModel = require('../../models/userModel');
+      const userModel = require('../../../models/userModel');
       const naty = userModel.users.find(u => u.username === 'Naty');
       if (naty) naty.saldo = 0; // mocka saldo insuficiente
 
@@ -34,7 +34,7 @@ describe('Transfer Controller', () => {
       await authed('post', '/users/recharge').send({ username: 'Naty', amount: 10 });
 
       const res = await authed('post', '/transfer')
-        .send({ from: 'Naty', to: 'Nathan', amount: 100 });
+        .send({ from: 'Naty', to: 'Nathan', valor: 100 });
 
       expect(res.status).to.equal(400);
       expect(res.body).to.have.property('error', 'Saldo insuficiente');
@@ -46,7 +46,7 @@ describe('Transfer Controller', () => {
         .throws(new Error('Erro simulado na transferência'));
 
       const res = await authed('post', '/transfer')
-        .send({ from: 'Naty', to: 'Nathan', amount: 100 });
+        .send({ from: 'Naty', to: 'Nathan', valor: 100 });
 
       expect(res.status).to.equal(500);
       expect(res.body).to.have.property('error', 'Erro simulado na transferência');
@@ -54,7 +54,7 @@ describe('Transfer Controller', () => {
 
     it('Deve retornar 403 quando usuário autenticado não bate com remetente', async () => {
       const res = await authed('post', '/transfer')
-        .send({ from: 'INEXISTENTE', to: 'QA', amount: 100 });
+        .send({ from: 'INEXISTENTE', to: 'QA', valor: 100 });
 
       expect(res.status).to.equal(403);
       expect(res.body).to.have.property('error', 'Usuário autenticado não corresponde ao remetente da transferência');
@@ -66,14 +66,14 @@ describe('Transfer Controller', () => {
       sinon.stub(transferService, 'transferValue').throws(err);
 
       const res = await authed('post', '/transfer')
-        .send({ from: 'QA', to: 'JULIO', amount: 100 });
+        .send({ from: 'QA', to: 'JULIO', valor: 100 });
 
       expect(res.status).to.equal(403);
       expect(res.body).to.have.property('error', 'Usuário autenticado não corresponde ao remetente da transferência');
     });
 
     it('Deve retornar 201 usando mock quando a transferência é válida', async () => {
-      const respostaEsperada = require('../fixture/Respostas/transferFixtureComSucesso.json').transferList[0];
+      const respostaEsperada = require('../fixture/transferFixtureComSucesso.json').transferList[0];
 
       // Mocka transferência bem-sucedida
       const mockData = {
@@ -85,7 +85,7 @@ describe('Transfer Controller', () => {
       sinon.stub(transferService, 'transferValue').returns(mockData);
 
       const res = await authed('post', '/transfer')
-        .send({ from: 'Naty', to: 'Nathan', amount: 100 });
+        .send({ from: 'Naty', to: 'Nathan', valor: 100 });
 
       expect(res.status).to.equal(201);
 
@@ -120,7 +120,7 @@ describe('Transfer Controller', () => {
       const res = await request(app)
         .post('/transfer')
         .set('Authorization', `Bearer ${token}`)
-        .send({ from: 'Nathan', to: 'Naty', amount: 100 });
+        .send({ from: 'Nathan', to: 'Naty', valor: 100 });
       expect(res.status).to.equal(400);
       expect(res.body).to.have.property('error', 'Saldo insuficiente');
     });

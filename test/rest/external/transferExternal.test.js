@@ -7,11 +7,11 @@ const {
     authRequestExternal
 } = require('../helpers/externalHelpers');
 
-describe('Transfer - external', () => {
+describe('Transfer - external Rest', () => {
     let token;
     let authed;
     // Melhoria: garantir que o destinatário existe e resetar saldo antes de cada teste
-    beforeEach(async () => {
+    before(async () => {
         token = await loginAndGetTokenExternal('Naty', '123456');
         authed = authRequestExternal(token);
 
@@ -32,7 +32,7 @@ describe('Transfer - external', () => {
         const userData = {
             from: 'Naty',
             to: 'QAS',
-            amount: 100
+            valor: 100
         };
         const res = await authed('post', '/transfer').send(userData);
         expect(res.status).to.equal(400);
@@ -57,16 +57,16 @@ describe('Transfer - external', () => {
         const userData = {
             from: 'Naty',
             to: 'Nathan',
-            amount: 100
+            valor: 100
         };
         const res = await authed('post', '/transfer').send(userData);
         expect(res.status).to.equal(201);
         expect(res.body).to.have.property('from', 'Naty');
         expect(res.body).to.have.property('to', 'Nathan');
-        expect(res.body).to.have.property('amount', 100);
+        expect(res.body).to.have.property('valor', 100);
         expect(res.body).to.have.property('date');
         // Melhoria: checar tipos
-        expect(res.body.amount).to.be.a('number');
+        expect(res.body.valor).to.be.a('number');
         expect(res.body.date).to.be.a('string');
 
         // Consulta saldo após transferência
@@ -81,8 +81,8 @@ describe('Transfer - external', () => {
             )).body.saldo;
 
         // Melhoria: valida saldo atualizado
-        expect(saldoRemetenteDepois).to.equal(saldoRemetenteAntes - userData.amount);
-        expect(saldoDestinatarioDepois).to.equal(saldoDestinatarioAntes + userData.amount);
+        expect(saldoRemetenteDepois).to.equal(saldoRemetenteAntes - userData.valor);
+        expect(saldoDestinatarioDepois).to.equal(saldoDestinatarioAntes + userData.valor);
     });
 
     it('Deve retornar 200 ao consultar transferências', async () => {
@@ -94,7 +94,7 @@ describe('Transfer - external', () => {
             const item = res.body[0];
             expect(item).to.have.property('from');
             expect(item).to.have.property('to');
-            expect(item).to.have.property('amount');
+            expect(item).to.have.property('valor');
             expect(item).to.have.property('date');
         }
     });
@@ -104,7 +104,7 @@ describe('Transfer - external', () => {
         const userData = {
             from: 'Naty',
             to: 'Nathan',
-            amount: 0
+            valor: 0
         };
         const res = await authed('post', '/transfer').send(userData);
         expect(res.status).to.equal(400);
@@ -116,7 +116,7 @@ describe('Transfer - external', () => {
         const userData = {
             from: 'Naty',
             to: 'Nathan',
-            amount: -50
+            valor: -50
         };
         const res = await authed('post', '/transfer').send(userData);
         expect(res.status).to.equal(400);
@@ -148,7 +148,7 @@ describe('Transfer - external - outro exemplo mostrado em aula', () => {
         const userData = {
             from: 'Naty',
             to: 'sophia',
-            amount: 1
+            valor: 1
         };
 
         const resposta = await request('http://localhost:3000')
@@ -161,7 +161,7 @@ describe('Transfer - external - outro exemplo mostrado em aula', () => {
         expect(resposta.body).to.have.property('to', 'sophia');
         expect(resposta.body).to.have.property('date');
         // Melhoria: checar tipos
-        expect(resposta.body.amount).to.be.a('number');
+        expect(resposta.body.valor).to.be.a('number');
         expect(resposta.body.date).to.be.a('string');
     });
 });

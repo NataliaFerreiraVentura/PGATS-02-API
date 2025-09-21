@@ -5,10 +5,10 @@ const sinon = require('sinon');
 const { expect } = require('chai');
 
 // Aplicação 
-const app = require('../../app');
+const app = require('../../../app');
 
 //Mock
-const userService = require('../../services/userService');
+const userService = require('../../../services/userService');
 
 describe('User Controller', () => {
   describe('GET /users', () => {

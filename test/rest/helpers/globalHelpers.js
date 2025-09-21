@@ -1,5 +1,5 @@
 const request = require('supertest');
-const app = require('../../app');
+const app = require('../../../app');
 
 function getRequestTarget(target) {
     return typeof target === 'string' ? target : app;

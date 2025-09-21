@@ -17,7 +17,7 @@ module.exports = gql`
   type Transfer {
     from: String!
     to: String!
-    amount: Float!
+    valor: Float!
     date: String!
   }
 
@@ -35,8 +35,8 @@ module.exports = gql`
   type Mutation {
     registerUser(username: String!, password: String!, favorecidos: [String]): User
     loginUser(username: String!, password: String!): AuthUser
-    rechargeCredit(username: String!, amount: Float!): RechargeResult
-    transfer(from: String!, to: String!, amount: Float!): Transfer
+    rechargeCredit(username: String!, valor: Float!): RechargeResult
+    transfer(from: String!, to: String!, valor: Float!): Transfer
   }
 
   type RechargeResult {
