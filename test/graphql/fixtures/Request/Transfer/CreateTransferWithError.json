@@ -1,0 +1,50 @@
+[
+    {
+        "nomeDoTeste": "Erro ao transferir com valor insuficiente",
+        "transfer": {
+            "query": "mutation Transfer($from: String!, $to: String!, $valor: Float!) { transfer(from: $from, to: $to, valor: $valor) { date from to valor } }",
+            "variables": {
+                "from": "Naty",
+                "to": "sophia",
+                "valor": 200000.01
+            }
+        },
+        "mensagemEsperada": "Saldo insuficiente"
+    },
+    {
+        "nomeDoTeste": "Erro ao transferir quando remetente não corresponde ao usuário logado",
+        "transfer": {
+            "query": "mutation Transfer($from: String!, $to: String!, $valor: Float!) { transfer(from: $from, to: $to, valor: $valor) { date from to valor } }",
+            "variables": {
+                "from": "isa",
+                "to": "Nathan",
+                "valor": 15
+            }
+        },
+        "mensagemEsperada": "Usuário autenticado não corresponde ao remetente da transferência"
+    },
+    {
+        "nomeDoTeste": "Erro ao transferir para destinatário inexistente",
+        "transfer": {
+            "query": "mutation Transfer($from: String!, $to: String!, $valor: Float!) { transfer(from: $from, to: $to, valor: $valor) { date from to valor } }",
+            "variables": {
+                "from": "Naty",
+                "to": "isa",
+                "valor": 15
+            }
+        },  
+        "mensagemEsperada": "Usuário remetente ou destinatário não encontrado"
+    },
+    {
+        "nomeDoTeste": "Erro ao transferir valor acima de R$ 5.000,00 para não favorecidos",
+        "transfer": {
+            "query": "mutation Transfer($from: String!, $to: String!, $valor: Float!) { transfer(from: $from, to: $to, valor: $valor) { date from to valor } }",
+            "variables": {  
+               "from": "Naty",
+               "to": "Nathan",
+               "valor": 5000.01
+           }
+       },
+       "mensagemEsperada": "Transferências acima de R$ 5.000,00 só são permitidas para favorecidos"
+    }
+]

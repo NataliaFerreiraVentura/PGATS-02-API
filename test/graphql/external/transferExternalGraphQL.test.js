@@ -32,16 +32,15 @@ describe('Testes de transferência - GraphQL', () => {
         .to.deep.equal(respostaEsperada.data.transfer);
     });
 
+    const testesDeErroDeNegocio = require('../fixtures/Request/Transfer/CreateTransferWithError.json');
+    testesDeErroDeNegocio.forEach((teste) => {
+        it(`Regra: ${teste.nomeDoTeste}`, async () => {
+            const respostasTransferencia = await request(process.env.BASE_URL_GRAPHQL)
+                .post('')
+                .set('Authorization', `Bearer ${token}`)
+                .send(teste.transfer);
 
-    it('Quando não houver saldo, deve retornar erro saldo insuficiente', async () => {
-        createTransfer.variables.valor = 10000.0; // Valor alto para garantir saldo insuficiente
-        const respostasTransferencia = await request(process.env.BASE_URL_GRAPHQL)
-            .post('')
-            .set('Authorization', `Bearer ${token}`)
-            .send(createTransfer)
-
-        expect(respostasTransferencia.body).to.have.property('errors');
-        expect(respostasTransferencia.body.errors[0].message).to.equal('Saldo insuficiente');
-        console.log('Erro retornado:', respostasTransferencia.body.errors[0].message);
+            expect(respostasTransferencia.body.errors[0].message).to.equal(teste.mensagemEsperada);
+        });
     });
 });
