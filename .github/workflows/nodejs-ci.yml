@@ -23,7 +23,7 @@ jobs:
       run: npm install
 
     - name: Rodar testes de api via controller
-      run: npm run test-controller
+      run: npm run test-controller-rest
 
     - name: Upload mochawesome report (controller)
       uses: actions/upload-artifact@v4
@@ -47,7 +47,7 @@ jobs:
       run: npm run test-external-graphql
 
 
-    - name: Upload mochawesome report
+    - name: Upload mochawesome report (external)
       uses: actions/upload-artifact@v4
       with:
         name: mochawesome-report
