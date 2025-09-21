@@ -4,7 +4,7 @@ const sinon = require('sinon');
 const { expect } = require('chai');
 const request = require('supertest');
 const transferService = require('../../../services/transferService');
-const { loginAndGetToken, authRequest } = require('../helpers/globalHelpers');
+const { loginAndGetToken, authRequest } = require('../helpers/controllerHelpers');
 const app = require('../../../app');
 describe('Transfer Controller', () => {
   let token, authed;
