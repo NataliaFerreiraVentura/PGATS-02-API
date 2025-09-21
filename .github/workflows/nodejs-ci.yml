@@ -23,7 +23,7 @@ jobs:
       run: npm install
 
     - name: Rodar testes de api via controller
-      run: npm run test-controller
+      run: npm run test-controller-rest
 
     - name: Upload mochawesome report (controller)
       uses: actions/upload-artifact@v4
@@ -32,13 +32,13 @@ jobs:
         path: mochawesome-report/
 
     - name: Subir a API
-      run: npm start-rest & # Inicia a API em segundo plano
+      run: npm run start-rest & # Inicia a API em segundo plano
     
     - name: Subir a API GraphQL
-      run: npm start-graphql & # Inicia a API GraphQL em segundo plano
+      run: npm run start-graphql & # Inicia a API GraphQL em segundo plano
       
     - name: Esperar a API iniciar
-      run: sleep 8 # Ajuste o tempo conforme necessário
+      run: sleep 10 # Ajuste o tempo conforme necessário
 
     - name: Rodar testes de api rest via HTTP
       run: npm run test-external-rest
@@ -47,8 +47,8 @@ jobs:
       run: npm run test-external-graphql
 
 
-    - name: Upload mochawesome report
+    - name: Upload mochawesome report (external)
       uses: actions/upload-artifact@v4
       with:
-        name: mochawesome-report
-        path: mochawesome-report/
+        name: mochawesome-report-external
+        path: mochawesome-report/external/
